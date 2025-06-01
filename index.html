@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Identifier App | Identify Colors, Match Paint & Create Palettes | iOS</title>
+  <meta name="description" content="The ultimate color identifier app for iOS. Identify colors from photos, match paint brands, explore 30,000+ colors, check accessibility, and create stunning palettes. Free download.">
+  <meta name="keywords" content="color identifier app, color detection app, paint matching app, color picker app, palette creator, iOS color app, color recognition, paint color matcher">
+  <meta name="author" content="Mobile Card Games & Travel Apps LLC">
+  <meta name="robots" content="index, follow">
+  <meta name="apple-itunes-app" content="app-id=6738211457">
+  <link rel="canonical" href="https://coloridentifier.app">
+  <link rel="icon" href="images/app-icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://coloridentifier.app">
+  <meta property="og:image" content="https://coloridentifier.app/images/app-icon.png">
+  <meta property="og:title" content="Color Identifier App | Identify Colors & Match Paint">
+  <meta property="og:description" content="The ultimate color identifier app. Identify colors from photos, match paint brands, and create stunning palettes. Download free on iOS.">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://coloridentifier.app">
+  <meta property="twitter:image" content="https://coloridentifier.app/images/app-icon.png">
+  <meta property="twitter:title" content="Color Identifier App | Identify Colors & Match Paint">
+  <meta property="twitter:description" content="The ultimate color identifier app. Identify colors from photos, match paint brands, and create stunning palettes. Download free on iOS.">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": "Color Identifier App",
+    "operatingSystem": "iOS",
+    "applicationCategory": "UtilitiesApplication, LifestyleApplication",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5.0",
+      "reviewCount": "100"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    },
+    "screenshot": [
+      "https://coloridentifier.app/images/screenshot1.png",
+      "https://coloridentifier.app/images/screenshot2.png",
+      "https://coloridentifier.app/images/screenshot3.png"
+    ],
+    "url": "https://apps.apple.com/us/app/discover-colors-paint-match/id6738211457",
+    "description": "The ultimate color identifier app for iOS. Identify colors from photos, match paint brands, explore 30,000+ colors, and create stunning palettes.",
+    "applicationSubCategory": "Design",
+    "datePublished": "2024-03-01"
+  }
+  </script>
+  
+  <style>
+    /* Reset and Base Styles */
+    :root {
+      --primary-color: #007aff;
+      --primary-hover: #0056b3;
+      --accent-color: #FF6B35;
+      --accent-hover: #e55a2b;
+      --text-dark: #1a1a1a;
+      --text-medium: #4a4a4a;
+      --text-light: #757575;
+      --bg-white: #ffffff;
+      --bg-light: #f8fafc;
+      --bg-section: #f1f5f9;
+      --border-light: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      color: var(--text-dark);
+      background: var(--bg-white);
+      overflow-x: hidden;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    
+    /* Color Stream Animation */
+    .color-stream {
+      height: 60px;
+      background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .color-stream-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+    
+    .color-stream-bottom {
+      margin-top: 4rem;
+    }
+    
+    .color-track {
+      display: flex;
+      animation: streamRight 60s linear infinite;
+      height: 100%;
+    }
+    
+    .color-track.reverse {
+      animation: streamLeft 45s linear infinite;
+    }
+    
+    .color-card {
+      min-width: 120px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1px;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .color-card:hover {
+      transform: scale(1.1);
+      z-index: 10;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .color-name {
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      padding: 0 0.5rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .color-card:hover .color-name {
+      opacity: 1;
+    }
+    
+    @keyframes streamRight {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100vw); }
+    }
+    
+    @keyframes streamLeft {
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-light);
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    
+    .header.scrolled {
+      top: 0;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+      height: 70px;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .logo img {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+    }
+    
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    
+    .nav-menu {
+      display: none;
+      list-style: none;
+      gap: 2rem;
+    }
+    
+    .nav-menu a {
+      text-decoration: none;
+      color: var(--text-medium);
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    
+    .nav-menu a:hover {
+      color: var(--primary-color);
+    }
+    
+    .header-cta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      gap: 0.5rem;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    
+    .btn-primary {
+      background: var(--accent-color);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .btn-secondary {
+      background: var(--bg-light);
+      color: var(--primary-color);
+      border: 1px solid var(--border-light);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-1px);
+    }
+    
+    /* Hero Section */
+    .hero {
+      padding: 10rem 0 6rem;
+      background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-section) 100%);
+      position: relative;
+    }
+    
+    .hero-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    
+    .hero-content h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      color: var(--text-dark);
+    }
+    
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-medium);
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+    
+    .hero-features {
+      list-style: none;
+      margin-bottom: 2.5rem;
+    }
+    
+    .hero-features li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      color: var(--text-medium);
+    }
+    
+    .hero-features i {
+      color: var(--primary-color);
+      font-size: 1.25rem;
+      width: 20px;
+    }
+    
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    
+    .rating-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .stars {
+      color: #FFD700;
+    }
+    
+    .hero-image {
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .phone-mockup {
+      max-width: 300px;
+      width: 100%;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));
+      transform: rotate(5deg);
+      transition: transform 0.3s ease;
+    }
+    
+    .phone-mockup:hover {
+      transform: rotate(0deg) scale(1.05);
+    }
+    
+    /* Features Grid */
+    .features {
+      padding: 6rem 0;
+      background: var(--bg-white);
+    }
+    
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 4rem;
+    }
+    
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text-dark);
+    }
+    
+    .section-header p {
+      font-size: 1.125rem;
+      color: var(--text-medium);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+    
+    .feature-card {
+      background: var(--bg-white);
+      padding: 2rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 1.5rem;
+      color: white;
+    }
+    
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-dark);
+    }
+    
+    .feature-card p {
+      color: var(--text-medium);
+      line-height: 1.6;
+    }
+    
+    /* How It Works */
+    .how-it-works {
+      padding: 6rem 0;
+      background: var(--bg-section);
+    }
+    
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    
+    .step {
+      text-align: center;
+      position: relative;
+    }
+    
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 auto 1.5rem;
+    }
+    
+    .step h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-dark);
+    }
+    
+    .step p {
+      color: var(--text-medium);
+      line-height: 1.6;
+    }
+    
+    /* Screenshots */
+    .screenshots {
+      padding: 6rem 0;
+      background: var(--bg-white);
+    }
+    
+    .screenshots-container {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      padding: 2rem 0;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .screenshot {
+      flex: 0 0 auto;
+      width: 200px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s ease;
+    }
+    
+    .screenshot:hover {
+      transform: scale(1.05);
+    }
+    
+    .screenshot img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Testimonials */
+    .testimonials {
+      padding: 6rem 0;
+      background: var(--bg-section);
+    }
+    
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    
+    .testimonial {
+      background: var(--bg-white);
+      padding: 2rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+    }
+    
+    .testimonial-content {
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      color: var(--text-medium);
+      line-height: 1.6;
+    }
+    
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .author-info h4 {
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    
+    .author-info p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    
+    .testimonial-stars {
+      color: #FFD700;
+      margin-bottom: 1rem;
+    }
+    
+    /* CTA Section */
+    .cta {
+      padding: 6rem 0;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      text-align: center;
+    }
+    
+    .cta h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .cta p {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+    
+    .cta .btn-primary {
+      background: white;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+      padding: 1rem 2rem;
+    }
+    
+    .cta .btn-primary:hover {
+      background: var(--bg-light);
+      transform: translateY(-2px);
+    }
+    
+    /* Override QR popup text color in CTA section */
+    .cta .qr-popup-top p {
+      color: var(--text-dark);
+    }
+    
+    /* Footer */
+    .footer {
+      background: var(--text-dark);
+      color: white;
+      padding: 3rem 0 2rem;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 2rem;
+    }
+    
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-brand img {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+    }
+    
+    .footer-links h4 {
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-links ul {
+      list-style: none;
+    }
+    
+    .footer-links ul li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-links ul li a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    
+    .footer-links ul li a:hover {
+      color: white;
+    }
+    
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 2rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    /* Responsive Design */
+    @media (min-width: 768px) {
+      .nav-menu {
+        display: flex;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+      }
+      
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero {
+        padding: 8rem 0 4rem;
+      }
+      
+      .section-header h2 {
+        font-size: 2rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .cta h2 {
+        font-size: 2rem;
+      }
+      
+      .screenshots-container {
+        justify-content: flex-start;
+      }
+    }
+    
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .color-track {
+        animation: none;
+      }
+      
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+    
+    /* QR Code Popup Styles */
+    .qr-popup {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background-color: var(--bg-white);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      width: 180px;
+      text-align: center;
+      border: 1px solid var(--border-light);
+    }
+    
+    .qr-popup-top {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--bg-white);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      width: 180px;
+      text-align: center;
+      border: 1px solid var(--border-light);
+    }
+    
+    .qr-popup img, .qr-popup-top img {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 0.5rem;
+      border-radius: var(--radius-sm);
+    }
+    
+    .qr-popup p, .qr-popup-top p {
+      color: var(--text-dark);
+      font-size: 0.875rem;
+      margin-bottom: 0;
+      font-weight: 500;
+    }
+    
+    /* Only show QR popups on desktop/hover-capable devices */
+    @media (hover: hover) {
+      .btn-download:hover .qr-popup,
+      .btn-download:hover .qr-popup-top {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+    
+    /* Explicitly hide QR popups on touch devices regardless of interaction */
+    @media (hover: none) {
+      .qr-popup, .qr-popup-top {
+        display: none !important;
+      }
+    }
+    
+    /* Ensure download buttons have relative positioning for QR popups */
+    .btn-download {
+      position: relative;
+    }
+
+    /* Focus states */
+    .btn:focus,
+    .color-card:focus {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Top Color Stream -->
+  <div class="color-stream color-stream-top" aria-hidden="true">
+    <div class="color-track" id="topColorTrack"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container">
+      <div class="nav-container">
+        <div class="logo">
+          <img src="images/app-icon.png" alt="Color Identifier App Icon">
+          <span class="logo-text">Color Identifier</span>
+        </div>
+        <nav>
+          <ul class="nav-menu">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#screenshots">Screenshots</a></li>
+            <li><a href="#testimonials">Reviews</a></li>
+          </ul>
+        </nav>
+        <div class="header-cta">
+          <a href="https://apps.apple.com/app/apple-store/id6738211457?pt=649248&ct=coloridentifierapp&mt=8" class="btn btn-secondary btn-download">
+            Download Free
+            <div class="qr-popup">
+              <img src="images/qrcode.png" alt="App Store QR Code">
+              <p>Scan to download</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-container">
+        <div class="hero-content">
+          <h1>The Ultimate Color Identifier App</h1>
+          <p class="hero-subtitle">Instantly identify colors from photos, match paint brands, explore 30,000+ colors, and create stunning palettes with our powerful iOS app.</p>
+          
+          <ul class="hero-features">
+            <li><i class="fas fa-palette"></i> Explore 30,000+ colors with exact HEX, RGB & CMYK codes</li>
+            <li><i class="fas fa-camera"></i> Extract color palettes from any photo instantly</li>
+            <li><i class="fas fa-paint-roller"></i> Match colors to major paint brands</li>
+            <li><i class="fas fa-universal-access"></i> Check color contrast for accessibility</li>
+          </ul>
+          
+          <div class="hero-cta">
+            <a href="https://apps.apple.com/app/apple-store/id6738211457?pt=649248&ct=coloridentifierapp&mt=8" class="btn btn-primary btn-download">
+              <i class="fab fa-apple"></i> Download Free on iOS
+              <div class="qr-popup-top">
+                <img src="images/qrcode.png" alt="App Store QR Code">
+                <p>Scan to download</p>
+              </div>
+            </a>
+            <a href="#features" class="btn btn-secondary">Learn More</a>
+          </div>
+          
+          <div class="rating-badge">
+            <span class="stars">★★★★★</span>
+            <span>5.0 • 100+ Reviews</span>
+          </div>
+        </div>
+        
+        <div class="hero-image">
+          <img src="images/screenshot1.png" alt="Color Identifier App Interface" class="phone-mockup">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Powerful Color Identification Features</h2>
+        <p>Everything you need to identify, match, and work with colors professionally</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-palette"></i>
+          </div>
+          <h3>Extensive Color Library</h3>
+          <p>Browse over 30,000 colors organized by hue, shade, and collection. Find the perfect color for any design project with precise color codes.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-camera"></i>
+          </div>
+          <h3>Photo Color Extraction</h3>
+          <p>Extract color palettes from any photo using your camera or photo library. Perfect for capturing inspiration from the world around you.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-paint-roller"></i>
+          </div>
+          <h3>Paint Brand Matching</h3>
+          <p>Match any color to equivalent options from major paint brands including Benjamin Moore, Sherwin-Williams, Behr, and more.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+          <h3>Color Harmony Tool</h3>
+          <p>Discover complementary, analogous, triadic, and split-complementary color schemes with our interactive color wheel.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-universal-access"></i>
+          </div>
+          <h3>Accessibility Checker</h3>
+          <p>Verify color contrast ratios for WCAG compliance. Ensure your designs are accessible to all users with built-in accessibility tools.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-swatchbook"></i>
+          </div>
+          <h3>Custom Palette Creation</h3>
+          <p>Create, save, and share your own color collections for branding, design projects, or personal use. Export in multiple formats.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Three simple steps to identify and work with any color</p>
+      </div>
+      
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Capture or Browse</h3>
+          <p>Take a photo of any object or browse our extensive library of 30,000+ colors to find your perfect match.</p>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Identify & Analyze</h3>
+          <p>Our app instantly identifies colors and provides detailed information including HEX, RGB, CMYK codes and accessibility ratings.</p>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Create & Share</h3>
+          <p>Build custom palettes, match to paint brands, check color harmony, and share your creations with clients or teams.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screenshots Section -->
+  <section class="screenshots" id="screenshots">
+    <div class="container">
+      <div class="section-header">
+        <h2>See the App in Action</h2>
+        <p>Explore our intuitive interface designed for professionals and enthusiasts</p>
+      </div>
+      
+      <div class="screenshots-container">
+        <div class="screenshot">
+          <img src="images/screenshot1.png" alt="Color Identifier Home Screen">
+        </div>
+        <div class="screenshot">
+          <img src="images/screenshot2.png" alt="Color Detection Feature">
+        </div>
+        <div class="screenshot">
+          <img src="images/screenshot3.png" alt="Saved Color Palettes">
+        </div>
+        <div class="screenshot">
+          <img src="images/screenshot4.png" alt="Paint Brand Matching">
+        </div>
+        <div class="screenshot">
+          <img src="images/screenshot5.png" alt="Color Analysis Tools">
+        </div>
+        <div class="screenshot">
+          <img src="images/screenshot6.png" alt="Custom Palette Creator">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <h2>What Our Users Say</h2>
+        <p>Join thousands of designers, artists, and color enthusiasts</p>
+      </div>
+      
+      <div class="testimonials-grid">
+        <div class="testimonial">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-content">"The accessibility checker is a game-changer for my web design work. I can quickly verify color combinations meet WCAG standards without leaving my creative workflow."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">AR</div>
+            <div class="author-info">
+              <h4>Alex R.</h4>
+              <p>UI/UX Designer</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-content">"Having 30,000+ colors at my fingertips is incredible. The ability to extract color palettes from photos has streamlined my branding projects immensely."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">MT</div>
+            <div class="author-info">
+              <h4>Michael T.</h4>
+              <p>Graphic Designer</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-content">"Perfect for both my digital artwork and home renovation projects. Being able to find matching paint brands for colors I discover is incredibly useful."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">JK</div>
+            <div class="author-info">
+              <h4>Jamie K.</h4>
+              <p>Artist & Home Renovator</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta" id="download">
+    <div class="container">
+      <h2>Ready to Identify Any Color?</h2>
+      <p>Download the Color Identifier app today and unlock the power of professional color identification and matching.</p>
+      <a href="https://apps.apple.com/app/apple-store/id6738211457?pt=649248&ct=coloridentifierapp&mt=8" class="btn btn-primary btn-download">
+        <i class="fab fa-apple"></i> Download Free on iOS
+        <div class="qr-popup-top">
+          <img src="images/qrcode.png" alt="App Store QR Code">
+          <p>Scan to download</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Bottom Color Stream -->
+  <div class="color-stream color-stream-bottom" aria-hidden="true">
+    <div class="color-track reverse" id="bottomColorTrack"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">
+            <img src="images/app-icon.png" alt="Color Identifier App">
+            <span>Color Identifier</span>
+          </div>
+          <p>The ultimate color identification app for designers, artists, and anyone who works with colors. Available free on iOS.</p>
+        </div>
+        
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#screenshots">Screenshots</a></li>
+            <li><a href="#testimonials">Reviews</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="https://www.privacypolicies.com/generic/">Privacy Policy</a></li>
+            <li><a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 Mobile Card Games & Travel Apps LLC. All Rights Reserved. • ColorIdentifier.app</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Color data from the provided JSON
+    const colors = [
+      {"name":"100 Mph","hex":"#c93f38"},
+      {"name":"20000 Leagues Under the Sea","hex":"#191970"},
+      {"name":"24 Carrot","hex":"#e56e24"},
+      {"name":"24 Karat","hex":"#dfc685"},
+      {"name":"3AM in Shibuya","hex":"#225577"},
+      {"name":"3am Latte","hex":"#c0a98e"},
+      {"name":"Atomic Orange","hex":"#f88605"},
+      {"name":"Banana","hex":"#fffc79"},
+      {"name":"Cherry","hex":"#cf0234"},
+      {"name":"Deep Blue","hex":"#040273"},
+      {"name":"Emerald","hex":"#028f1e"},
+      {"name":"Fire","hex":"#8f3f2a"},
+      {"name":"Gold","hex":"#ffd700"},
+      {"name":"Hot Pink","hex":"#ff028d"},
+      {"name":"Indigo","hex":"#4b0082"},
+      {"name":"Jungle","hex":"#00a466"},
+      {"name":"Lime","hex":"#aaff32"},
+      {"name":"Magenta","hex":"#ff00ff"},
+      {"name":"Navy","hex":"#01153e"},
+      {"name":"Orange","hex":"#ffa500"},
+      {"name":"Purple","hex":"#800080"},
+      {"name":"Red","hex":"#ff0000"},
+      {"name":"Sky Blue","hex":"#76d6ff"},
+      {"name":"Turquoise","hex":"#06c2ac"},
+      {"name":"Ultra Green","hex":"#7eba4d"},
+      {"name":"Violet","hex":"#9a0eea"},
+      {"name":"Watermelon","hex":"#fd4659"},
+      {"name":"Yellow","hex":"#ffff00"},
+      {"name":"Zombie","hex":"#dadead"},
+      {"name":"Coral","hex":"#ff7f50"},
+      {"name":"Mint","hex":"#3eb489"},
+      {"name":"Peach","hex":"#ffb07c"},
+      {"name":"Rose","hex":"#f7746b"},
+      {"name":"Sage","hex":"#87ae73"},
+      {"name":"Teal","hex":"#008080"},
+      {"name":"Aqua","hex":"#00ffff"},
+      {"name":"Bronze","hex":"#a87900"},
+      {"name":"Copper","hex":"#b87333"},
+      {"name":"Silver","hex":"#c0c0c0"},
+      {"name":"Platinum","hex":"#e5e4e2"},
+      {"name":"Crimson","hex":"#dc143c"},
+      {"name":"Forest","hex":"#0b5509"},
+      {"name":"Ocean","hex":"#009dc4"},
+      {"name":"Sunset","hex":"#fd5e53"},
+      {"name":"Dawn","hex":"#fad5a5"},
+      {"name":"Dusk","hex":"#4e5481"},
+      {"name":"Midnight","hex":"#03012d"},
+      {"name":"Thunder","hex":"#f9f5db"},
+      {"name":"Lightning","hex":"#e5ebe6"},
+      {"name":"Rainbow","hex":"#ff0080"}
+    ];
+
+    // Create color cards for the streams
+    function createColorCards(container, count = 50) {
+      const shuffledColors = [...colors].sort(() => Math.random() - 0.5);
+      
+      for (let i = 0; i < count; i++) {
+        const color = shuffledColors[i % shuffledColors.length];
+        const card = document.createElement('div');
+        card.className = 'color-card';
+        card.style.backgroundColor = color.hex;
+        card.setAttribute('title', `${color.name} - ${color.hex}`);
+        card.innerHTML = `<span class="color-name">${color.name}</span>`;
+        container.appendChild(card);
+      }
+    }
+
+    // Initialize color streams
+    const topTrack = document.getElementById('topColorTrack');
+    const bottomTrack = document.getElementById('bottomColorTrack');
+    
+    createColorCards(topTrack, 60);
+    createColorCards(bottomTrack, 60);
+
+    // Header scroll effect
+    const header = document.getElementById('header');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          const headerHeight = 130; // Adjust for fixed header + color stream
+          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+          
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Add keyboard navigation for color cards
+    document.querySelectorAll('.color-card').forEach(card => {
+      card.setAttribute('tabindex', '0');
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          // Copy color to clipboard if supported
+          if (navigator.clipboard) {
+            const colorHex = card.style.backgroundColor;
+            navigator.clipboard.writeText(colorHex).then(() => {
+              console.log('Color copied to clipboard:', colorHex);
+            });
+          }
+        }
+      });
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe feature cards, testimonials, and steps
+    document.querySelectorAll('.feature-card, .testimonial, .step').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
